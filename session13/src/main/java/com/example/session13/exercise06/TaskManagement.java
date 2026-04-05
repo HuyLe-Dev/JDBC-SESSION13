@@ -1,4 +1,4 @@
-package main.java.com.example.session13.exercise06;
+package com.example.session13.exercise06;
 
 import java.sql.CallableStatement;
 import java.sql.Connection;

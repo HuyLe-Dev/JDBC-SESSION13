@@ -1,4 +1,4 @@
-package main.java.com.example.session13.exercise03;
+package com.example.session13.exercise03;
 
 import java.sql.CallableStatement;
 import java.sql.Connection;
@@ -8,7 +8,7 @@ public class StudentRepository {
         int deletedCount = 0;
 
         try (Connection connection = DBConnection.getConnection();
-                CallableStatement cs = conn.prepareCall("{call delete_students_by_age(?)}")) {
+                CallableStatement cs = connection.prepareCall("{call delete_students_by_age(?)}")) {
             connection.setAutoCommit(false);
             try {
                 // Truyền tham số vào Stored Procedure
@@ -19,10 +19,10 @@ public class StudentRepository {
                 deletedCount = cs.executeUpdate();
 
                 // Xác nhận Transaction
-                conn.commit();
+                connection.commit();
             } catch (Exception e) {
                 System.err.println("Lỗi SQL khi xóa, đang Rollback: " + e.getMessage());
-                conn.rollback();
+                connection.rollback();
             }
         } catch (Exception e) {
             System.err.println("Lỗi kết nối CSDL: " + e.getMessage());

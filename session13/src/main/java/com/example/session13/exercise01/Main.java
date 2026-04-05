@@ -1,4 +1,4 @@
-package main.java.com.example.session13.exercise01;
+package com.example.session13.exercise01;
 
 import java.util.List;
 
@@ -9,7 +9,9 @@ public class Main {
         List<Student> students = List.of(
                 new Student(0, "Nguyen Van A", 20),
                 new Student(0, "Nguyen Van B", 22),
-                new Student(0, "Nguyen Van A", 28));
+                new Student(0, "Nguyen Van A", 28),
+                new Student(0, "LE MINH HUY", 19)
+        );
 
         repository.addStudents(students);
     }

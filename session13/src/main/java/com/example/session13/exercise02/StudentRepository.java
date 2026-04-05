@@ -1,4 +1,4 @@
-package main.java.com.example.session13.exercise02;
+package com.example.session13.exercise02;
 
 import java.sql.CallableStatement;
 import java.sql.Connection;
@@ -26,13 +26,13 @@ public class StudentRepository {
                     if (count == 0) {
                         // Phát hiện có câu lệnh không update được dòng nào (Ví dụ: Sai ID)
                         System.err.println("Cảnh báo: Có sinh viên không tồn tại trong DB. Đang Rollback toàn bộ...");
-                        conn.rollback();
+                        connection.rollback();
                         return false; // Hủy bỏ giao dịch
                     }
                 }
 
                 // Nếu qua được vòng for nghĩa là mọi update đều tác động ít nhất 1 dòng
-                conn.commit();
+                connection.commit();
                 return true;
             } catch (Exception e) {
                 System.err.println("Lỗi dữ liệu, đang thực hiện Rollback: " + e.getMessage());

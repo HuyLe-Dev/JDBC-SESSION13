@@ -1,4 +1,4 @@
-package main.java.com.example.session13.exercise02;
+package com.example.session13.exercise02;
 
 import java.util.List;
 

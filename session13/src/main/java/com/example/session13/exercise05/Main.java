@@ -1,4 +1,4 @@
-package main.java.com.example.session13.exercise05;
+package com.example.session13.exercise05;
 
 import java.util.List;
 import java.util.Scanner;

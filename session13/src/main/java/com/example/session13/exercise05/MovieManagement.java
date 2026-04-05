@@ -1,4 +1,4 @@
-package main.java.com.example.session13.exercise05;
+package com.example.session13.exercise05;
 
 import java.sql.CallableStatement;
 import java.sql.Connection;
@@ -22,8 +22,8 @@ public class MovieManagement {
         }
     }
 
-    public List<Movie> listMovie() {
-        var results = new ArrayList<>();
+    public List<Movie> listMovies() {
+        List<Movie> results = new ArrayList<>();
         try (Connection connection = DBConnection.getConnection();
                 CallableStatement cs = connection.prepareCall("{call list_movies(?, ?, ?)}");
                 ResultSet rs = cs.executeQuery();) {
@@ -38,7 +38,7 @@ public class MovieManagement {
         return results;
     }
 
-    public void updateMovie(int id, String title, String diretor, int year) {
+    public void updateMovie(int id, String title, String director, int year) {
         try (Connection connection = DBConnection.getConnection();
                 CallableStatement cs = connection.prepareCall("{call update_movie(?, ?, ?, ?)}")) {
             cs.setInt(1, id);
