@@ -2,46 +2,51 @@ package com.example.session13.exercise02;
 
 import java.sql.CallableStatement;
 import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 public class StudentRepository {
-    public boolean updateStudents(List<Student> students) {
-        try (Connection connection = DBConnection.getConnection();
-                CallableStatement cs = connection.prepareCall("{call update_student(?, ?, ?)}")) {
-            connection.setAutoCommit(false);
-            try {
-                for (var student : students) {
-                    cs.setInt(1, student.id());
-                    cs.setString(2, student.name());
-                    cs.setInt(3, student.age());
+    public List<Student> getAllStudents() {
+        var results = new ArrayList<Student>();
 
-                    cs.addBatch();
-                }
+        try (Connection conn = DBConnection.getConnection();
+                CallableStatement cs = conn.prepareCall("{call get_all_students()}");
+                ResultSet rs = cs.executeQuery()) {
 
-                // Lấy mảng kết quả
-                int[] updateCounts = cs.executeBatch();
-
-                // Quét qua mảng kết quả (Giống mảng.some() trong JS)
-                for (int count : updateCounts) {
-                    if (count == 0) {
-                        // Phát hiện có câu lệnh không update được dòng nào (Ví dụ: Sai ID)
-                        System.err.println("Cảnh báo: Có sinh viên không tồn tại trong DB. Đang Rollback toàn bộ...");
-                        connection.rollback();
-                        return false; // Hủy bỏ giao dịch
-                    }
-                }
-
-                // Nếu qua được vòng for nghĩa là mọi update đều tác động ít nhất 1 dòng
-                connection.commit();
-                return true;
-            } catch (Exception e) {
-                System.err.println("Lỗi dữ liệu, đang thực hiện Rollback: " + e.getMessage());
-                connection.rollback();
-                return false;
+            while (rs.next()) {
+                results.add(new Student(
+                        rs.getInt("student_id"),
+                        rs.getString("full_name"),
+                        rs.getDate("date_of_birth").toLocalDate(),
+                        rs.getString("email")));
             }
-        } catch (Exception e) {
-            System.err.println("Lỗi kết nối CSDL: " + e.getMessage());
-            return false;
+
+        } catch (SQLException e) {
+            System.err.println("Lỗi khi lấy danh sách sinh viên: " + e.getMessage());
+        }
+
+        return results;
+    }
+
+    public void addStudent(String fullName, LocalDate dateOfBirth, String email) {
+        try (Connection conn = DBConnection.getConnection();
+                CallableStatement cs = conn.prepareCall("{call add_student(?, ?, ?)}")) {
+
+            cs.setString(1, fullName);
+            // Date.valueOf() chuyển LocalDate → java.sql.Date — giống toISOString() trong
+            // JS
+            cs.setDate(2, Date.valueOf(dateOfBirth));
+            cs.setString(3, email);
+            cs.executeUpdate();
+
+            System.out.println("Thêm sinh viên thành công!");
+
+        } catch (SQLException e) {
+            System.err.println("Lỗi khi thêm sinh viên: " + e.getMessage());
         }
     }
+
 }
